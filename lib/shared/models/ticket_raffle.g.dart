@@ -7,12 +7,13 @@ part of 'ticket_raffle.dart';
 // **************************************************************************
 
 TicketRaffle _$TicketRaffleFromJson(Map<String, dynamic> json) {
-  return TicketRaffle()
-    ..createdBy = json['createdBy'] as String
-    ..companyId = json['companyId'] as String
-    ..createdDate = json['createdDate'] as String
-    ..raffleDate = json['raffleDate'] as String
-    ..raffleNumber = json['raffleNumber'] as int;
+  return TicketRaffle(
+    companyId: json['companyId'] as String,
+    createdBy: json['createdBy'] as String,
+    createdDate: json['createdDate'] as String,
+    raffleDate: json['raffleDate'] as String,
+    raffleNumber: json['raffleNumber'] as int,
+  );
 }
 
 Map<String, dynamic> _$TicketRaffleToJson(TicketRaffle instance) =>

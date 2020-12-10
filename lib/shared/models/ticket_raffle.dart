@@ -10,7 +10,12 @@ class TicketRaffle {
   String raffleDate;
   int raffleNumber;
 
-  TicketRaffle();
+  TicketRaffle(
+      {this.companyId,
+      this.createdBy,
+      this.createdDate,
+      this.raffleDate,
+      this.raffleNumber});
 
   factory TicketRaffle.fromJson(Map<String, dynamic> json) =>
       _$TicketRaffleFromJson(json);
