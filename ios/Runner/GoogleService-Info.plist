@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>602148255718-g569fok7t5fdfp41nd1gmlfn4j69pl2v.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.602148255718-g569fok7t5fdfp41nd1gmlfn4j69pl2v</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBoS19CN6DVdG4sSt6iiwaKgvMw8Z528pQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>602148255718</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mobibent.trocoPremiado</string>
+	<key>PROJECT_ID</key>
+	<string>troco-premiado</string>
+	<key>STORAGE_BUCKET</key>
+	<string>troco-premiado.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:602148255718:ios:14322d3e8ca34186bf4827</string>
+	<key>DATABASE_URL</key>
+	<string>https://troco-premiado.firebaseio.com</string>
+</dict>
+</plist>
