@@ -9,6 +9,7 @@ class AppWidget extends StatelessWidget {
       title: 'Troco Premiado',
       theme: ThemeData(
         primaryColor: Color(0xff2E15A4),
+        //primaryColor: Color(0xff6959CD),
       ),
       initialRoute: '/',
       onGenerateRoute: Modular.generateRoute,

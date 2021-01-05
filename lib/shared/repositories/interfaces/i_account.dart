@@ -13,9 +13,10 @@ import 'package:troco_premiado/shared/models/company.dart';
 */
 
 abstract class IAccount {
-  Future<Account> getAccount();
+  Future<Account> getAccount(String email);
   Future<Account> registerAccount(
       {@required String email, @required String name});
+  //registrar se não existe ou retornar do banco caso exista
   Future<Company> getCompany(String companyId);
   Future<bool> setLocationCompany(); //ver parametros
 }
