@@ -30,8 +30,11 @@ class _SplashPageState extends ModularState<SplashPage, SplashController> {
       await Future<void>.delayed(Duration(milliseconds: 400));
       await Firebase.initializeApp();
 
-      if (await controller.logInSilentilySuccessFully()) {
-        var account = await controller.getAccount();
+      if (await controller.getCurrentAccountSuccessFully()) {
+        var account = controller.prevAccount;
+        Modular.to.pushReplacementNamed('/home', arguments: account);
+      } else if (await controller.logInSilentilySuccessFully()) {
+        var account = controller.prevAccount;
         Modular.to.pushReplacementNamed('/home', arguments: account);
       } else {
         Modular.to.pushReplacementNamed('/login');
@@ -48,34 +51,37 @@ class _SplashPageState extends ModularState<SplashPage, SplashController> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      //backgroundColor: Theme.of(context).primaryColor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          //App Icon
-          Container(
-            height: 200,
-            width: screenSize.width,
-            child: Lottie.asset('assets/images/coin_loading.json'),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Aguarde um momento...',
-            style:
-                TextStyle(color: Theme.of(context).primaryColor, fontSize: 20),
-          ),
-          const SizedBox(height: 20),
-          Container(
-            width: screenSize.width * 0.75,
-            child: LinearProgressIndicator(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              valueColor:
-                  AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        //backgroundColor: Theme.of(context).primaryColor,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            //App Icon
+            Container(
+              height: 200,
+              width: screenSize.width,
+              child: Lottie.asset('assets/images/coin_loading.json'),
             ),
-          )
-        ],
+            const SizedBox(height: 20),
+            Text(
+              'Aguarde um momento...',
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor, fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: screenSize.width * 0.75,
+              child: LinearProgressIndicator(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
