@@ -17,11 +17,11 @@ class AccountRepository implements IAccount {
     final accountCache =
         CacheController<Account>(cacheBoxEnum: CacheBox.Account);
 
-    var cachedAccount = await accountCache.getByKey('account');
+    // var cachedAccount = await accountCache.getByKey('account');
 
-    if (cachedAccount != null && cachedAccount.active ?? false) {
-      return cachedAccount;
-    }
+    // if (cachedAccount != null && cachedAccount.active ?? false) {
+    //   return cachedAccount;
+    // }
 
     try {
       var rawDocs = await _firestore
