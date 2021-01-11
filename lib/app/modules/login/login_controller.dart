@@ -1,5 +1,8 @@
 import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:troco_premiado/shared/models/account.dart';
+import 'package:troco_premiado/shared/repositories/auth_repository.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_auth.dart';
 
 part 'login_controller.g.dart';
 
@@ -7,11 +10,11 @@ part 'login_controller.g.dart';
 class LoginController = _LoginControllerBase with _$LoginController;
 
 abstract class _LoginControllerBase with Store {
-  @observable
-  int value = 0;
+  IAuth _authRepository = AuthRepository();
 
-  @action
-  void increment() {
-    value++;
+  Future<Account> logInGoogle() async {
+    final account = await _authRepository.logInGoogle();
+
+    return account;
   }
 }

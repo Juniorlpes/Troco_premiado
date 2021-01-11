@@ -52,9 +52,8 @@ class AccountRepository implements IAccount {
           .collection('auth')
           .where('email', isEqualTo: email)
           .get();
-      var doc = rawDocs.docs.first;
 
-      if (doc == null) {
+      if (rawDocs.docs.isEmpty) {
         var account = Account(
           email: email,
           name: name,
@@ -73,6 +72,7 @@ class AccountRepository implements IAccount {
 
       return await getAccount(email);
     } catch (e) {
+      print(e);
       return null;
     }
   }

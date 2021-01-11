@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "602148255718-udf3v17ca0pcq0pkjd9buknbbdi58ndl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobibent.troco_premiado",
+            "certificate_hash": "b7fb82e18125987cf8ad1d07147ac2099b250008"
+          }
+        },
+        {
           "client_id": "602148255718-ov1l92sl4bo6bbt256c03g7be6dna2e2.apps.googleusercontent.com",
           "client_type": 3
         }
