@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:troco_premiado/app/modules/home/components/home_body.dart';
 import 'package:troco_premiado/app/modules/home/widgets/inactive_account_widget.dart';
 import 'package:troco_premiado/shared/components/commom_animations.dart';
 import 'package:troco_premiado/shared/models/account.dart';
@@ -52,7 +53,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       body: Observer(
         builder: (_) => (!controller.mainAccount.active)
             ? InactiveAccountWidget()
-            : Container(),
+            : HomeBody(),
       ),
     );
   }

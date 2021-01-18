@@ -8,6 +8,7 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="troco_premiado"
+        android:screenOrientation="portrait"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -23,12 +23,10 @@ class _SplashPageState extends ModularState<SplashPage, SplashController> {
     // ));
 
     disposer = autorun((_) async {
-      //await Position().start();
-      //Acho q o position sera necessario ao pegar company
-
-      //delay para tentar dar tempo o Hive carregar e o Position.
-      await Future<void>.delayed(Duration(milliseconds: 400));
+      await controller.initHive();
       await Firebase.initializeApp();
+
+      await controller.verifyAndSetRaffleDatesCache();
 
       if (await controller.getCurrentAccountSuccessFully()) {
         var account = controller.prevAccount;

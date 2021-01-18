@@ -5,7 +5,7 @@ import 'package:troco_premiado/shared/repositories/interfaces/i_raffle.dart';
 
 class RaffleRepository implements IRaffle {
   @override
-  Future<void> cacheNewRaffleDates({int month, int year}) async {
+  Future<void> cacheRaffleDates({int month, int year}) async {
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
@@ -41,7 +41,30 @@ class RaffleRepository implements IRaffle {
   }
 
   @override
-  Future<TicketRaffle> sortNumber() {
+  Future<void> cacheNextRaffleDates(DateTime date) async {
+    if (date.month == 12) {
+      await cacheRaffleDates(
+        month: 1,
+        year: date.year + 1,
+      );
+    } else {
+      await cacheRaffleDates(
+        month: date.month + 1,
+        year: date.year,
+      );
+    }
+  }
+
+  @override
+  Future<bool> cacheRaffle(TicketRaffle raffle) async {
+    final cacheRaffles =
+        CacheController<TicketRaffle>(cacheBoxEnum: CacheBox.Raffle);
+
+    return await cacheRaffles.write(raffle) != null;
+  }
+
+  @override
+  Future<TicketRaffle> sortNumber(TicketRaffle raffle) {
     // TODO: implement sortNumber
     throw UnimplementedError();
   }

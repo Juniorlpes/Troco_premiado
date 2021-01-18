@@ -1,13 +1,21 @@
+import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:troco_premiado/shared/cache/cache_adapters_id.dart';
 
 part 'ticket_raffle.g.dart';
 
 @JsonSerializable()
+@HiveType(typeId: CacheAdaptersId.RaffleAdapter)
 class TicketRaffle {
+  @HiveField(0)
   String createdBy;
+  @HiveField(1)
   String companyId;
-  String createdDate;
-  String raffleDate;
+  @HiveField(2)
+  DateTime createdDate;
+  @HiveField(3)
+  DateTime raffleDate;
+  @HiveField(4)
   int raffleNumber;
 
   TicketRaffle(
