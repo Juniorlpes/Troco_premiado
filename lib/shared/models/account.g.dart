@@ -20,8 +20,8 @@ class AccountAdapter extends TypeAdapter<Account> {
       active: fields[0] as bool,
       company: fields[1] as String,
       email: fields[3] as String,
-      id: fields[4] as int,
-      idCompany: fields[2] as int,
+      id: fields[4] as String,
+      idCompany: fields[2] as String,
       name: fields[5] as String,
     );
   }
@@ -64,8 +64,8 @@ Account _$AccountFromJson(Map<String, dynamic> json) {
     active: json['active'] as bool,
     company: json['company'] as String,
     email: json['email'] as String,
-    id: json['id'] as int,
-    idCompany: json['idCompany'] as int,
+    id: json['id'] as String,
+    idCompany: json['idCompany'] as String,
     name: json['name'] as String,
   );
 }

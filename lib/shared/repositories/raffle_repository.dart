@@ -1,5 +1,10 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
 import 'package:troco_premiado/shared/cache/cache_controller.dart';
+import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 import 'package:troco_premiado/shared/repositories/interfaces/i_raffle.dart';
 
@@ -64,8 +69,67 @@ class RaffleRepository implements IRaffle {
   }
 
   @override
-  Future<TicketRaffle> sortNumber(TicketRaffle raffle) {
-    // TODO: implement sortNumber
-    throw UnimplementedError();
+  Future<TicketRaffle> sortNumber(Account mainAccount) async {
+    final _firestore = FirebaseFirestore.instance;
+    final cacheDateRaffles =
+        CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
+    String collectionName;
+
+    //Ticket Raffle Fields
+    int raffleNumber;
+    DateTime raffleDate;
+
+    final String createdBy = mainAccount.id;
+    final String companyId = mainAccount.idCompany;
+    final DateTime createdDate =
+        DateTime.now(); //DateFormat('dd-MM-yyyy').format(DateTime.now());
+    if (companyId == null) {
+      return null;
+    }
+    // ********
+
+    //Next RaffleDate
+    if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(1))) {
+      raffleDate = await cacheDateRaffles.getByKey(1);
+    } else if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(2))) {
+      raffleDate = await cacheDateRaffles.getByKey(2);
+    } else {
+      await cacheNextRaffleDates(DateTime.now());
+      raffleDate = await cacheDateRaffles.getByKey(1);
+    }
+    collectionName =
+        'ticket_raffle-${DateFormat('dd-MM-yyyy').format(raffleDate)}';
+    // *********
+
+    //raffle
+    var random = Random();
+    bool containsThisRaffleNumber = false;
+    do {
+      raffleNumber = random.nextInt(10000);
+
+      var dbRaffles = await _firestore
+          .collection(collectionName)
+          .where('raffleNumber', isEqualTo: raffleNumber)
+          .get();
+
+      if (dbRaffles.docs.isEmpty) {
+        containsThisRaffleNumber = false;
+      } else {
+        containsThisRaffleNumber = true;
+      }
+    } while (containsThisRaffleNumber);
+    // ****
+
+    final completedTicketRaffle = TicketRaffle(
+      companyId: companyId,
+      createdBy: createdBy,
+      createdDate: createdDate,
+      raffleDate: raffleDate,
+      raffleNumber: raffleNumber,
+      formattedRaffleNumber: '', //TODO: fazer funcao para isso
+    );
+
+    await cacheRaffle(completedTicketRaffle);
+    return completedTicketRaffle;
   }
 }

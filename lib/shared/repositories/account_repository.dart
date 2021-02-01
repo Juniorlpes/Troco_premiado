@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
-import 'package:troco_premiado/shared/cache/cache_controller.dart';
 import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/repositories/interfaces/i_account.dart';
@@ -14,8 +12,8 @@ class AccountRepository implements IAccount {
 
   @override
   Future<Account> getAccount(String email) async {
-    final accountCache =
-        CacheController<Account>(cacheBoxEnum: CacheBox.Account);
+    // final accountCache =
+    //     CacheController<Account>(cacheBoxEnum: CacheBox.Account);
 
     // var cachedAccount = await accountCache.getByKey('account');
 
@@ -34,7 +32,7 @@ class AccountRepository implements IAccount {
         return null;
       }
 
-      await accountCache.writeByKey('account', Account.fromJson(doc.data()));
+      // await accountCache.writeByKey('account', Account.fromJson(doc.data()));
 
       return Account.fromJson(doc.data());
     } catch (e) {
@@ -45,8 +43,8 @@ class AccountRepository implements IAccount {
 
   @override
   Future<Account> registerAccount({String email, String name}) async {
-    final accountCache =
-        CacheController<Account>(cacheBoxEnum: CacheBox.Account);
+    // final accountCache =
+    //     CacheController<Account>(cacheBoxEnum: CacheBox.Account);
     try {
       var rawDocs = await _firestore
           .collection('auth')
@@ -65,9 +63,18 @@ class AccountRepository implements IAccount {
 
         await _firestore.collection('auth').doc().set(account.toJson());
 
-        await accountCache.writeByKey('account', account);
+        var newAccount = await _firestore
+            .collection('auth')
+            .where('email', isEqualTo: email)
+            .get();
 
-        return account;
+        final idAccount = newAccount.docs[0].reference.id;
+
+        await newAccount.docs[0].reference.update({'id': idAccount});
+
+        // await accountCache.writeByKey('account', account);
+
+        return account..id = idAccount;
       }
 
       return await getAccount(email);

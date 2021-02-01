@@ -12,11 +12,11 @@ class Account {
   @HiveField(1)
   String company;
   @HiveField(2)
-  int idCompany;
+  String idCompany;
   @HiveField(3)
   String email;
   @HiveField(4)
-  int id;
+  String id;
   @HiveField(5)
   String name;
 

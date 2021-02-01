@@ -22,13 +22,14 @@ class TicketRaffleAdapter extends TypeAdapter<TicketRaffle> {
       createdDate: fields[2] as DateTime,
       raffleDate: fields[3] as DateTime,
       raffleNumber: fields[4] as int,
+      formattedRaffleNumber: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, TicketRaffle obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.createdBy)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class TicketRaffleAdapter extends TypeAdapter<TicketRaffle> {
       ..writeByte(3)
       ..write(obj.raffleDate)
       ..writeByte(4)
-      ..write(obj.raffleNumber);
+      ..write(obj.raffleNumber)
+      ..writeByte(5)
+      ..write(obj.formattedRaffleNumber);
   }
 
   @override
@@ -67,6 +70,7 @@ TicketRaffle _$TicketRaffleFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['raffleDate'] as String),
     raffleNumber: json['raffleNumber'] as int,
+    formattedRaffleNumber: json['formattedRaffleNumber'] as String,
   );
 }
 
@@ -77,4 +81,5 @@ Map<String, dynamic> _$TicketRaffleToJson(TicketRaffle instance) =>
       'createdDate': instance.createdDate?.toIso8601String(),
       'raffleDate': instance.raffleDate?.toIso8601String(),
       'raffleNumber': instance.raffleNumber,
+      'formattedRaffleNumber': instance.formattedRaffleNumber,
     };

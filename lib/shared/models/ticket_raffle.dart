@@ -17,13 +17,16 @@ class TicketRaffle {
   DateTime raffleDate;
   @HiveField(4)
   int raffleNumber;
+  @HiveField(5)
+  String formattedRaffleNumber;
 
   TicketRaffle(
       {this.companyId,
       this.createdBy,
       this.createdDate,
       this.raffleDate,
-      this.raffleNumber});
+      this.raffleNumber,
+      this.formattedRaffleNumber});
 
   factory TicketRaffle.fromJson(Map<String, dynamic> json) =>
       _$TicketRaffleFromJson(json);
