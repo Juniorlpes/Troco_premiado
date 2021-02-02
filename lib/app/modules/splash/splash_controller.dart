@@ -23,6 +23,9 @@ abstract class _SplashControllerBase with Store {
   Account prevAccount;
 
   Future<void> initHive() async {
+    if (Hive.isAdapterRegistered(1)) {
+      return;
+    }
     final appDocumentDirectory = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDirectory.path);
     Hive.registerAdapter(AccountAdapter());

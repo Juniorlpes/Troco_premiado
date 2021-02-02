@@ -69,7 +69,8 @@ class RaffleRepository implements IRaffle {
   }
 
   @override
-  Future<TicketRaffle> sortNumber(Account mainAccount) async {
+  Future<TicketRaffle> sortNumber(Account mainAccount, String clientName,
+      String phone, double ticketValue) async {
     final _firestore = FirebaseFirestore.instance;
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
@@ -126,7 +127,10 @@ class RaffleRepository implements IRaffle {
       createdDate: createdDate,
       raffleDate: raffleDate,
       raffleNumber: raffleNumber,
-      formattedRaffleNumber: '', //TODO: fazer funcao para isso
+      formattedRaffleNumber: NumberFormat('00000').format(raffleNumber),
+      clientPhoneNumber: phone,
+      clientName: clientName,
+      ticketValue: ticketValue,
     );
 
     await cacheRaffle(completedTicketRaffle);

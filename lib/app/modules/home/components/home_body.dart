@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:troco_premiado/app/modules/home/home_controller.dart';
+import 'package:troco_premiado/shared/components/commom_animations.dart';
 
 class HomeBody extends StatelessWidget {
+  final controller = Modular.get<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -15,7 +19,7 @@ class HomeBody extends StatelessWidget {
           children: [
             Card(
               child: InkWell(
-                onTap: () {},
+                onTap: () => Modular.to.pushNamed('/home/addTicket'),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -48,6 +52,38 @@ class HomeBody extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text(
                       'Histórico',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              child: InkWell(
+                onTap: () async {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => SimpleLoadingAnimation(isWhite: true),
+                  );
+                  final loggedOut = await controller.logOut();
+                  Modular.to.pop();
+                  if (loggedOut) {
+                    Modular.to.pushReplacementNamed('/');
+                  }
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.exit_to_app,
+                      size: 28,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Log out',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16),
                     )

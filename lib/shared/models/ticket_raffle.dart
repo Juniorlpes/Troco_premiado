@@ -19,6 +19,12 @@ class TicketRaffle {
   int raffleNumber;
   @HiveField(5)
   String formattedRaffleNumber;
+  @HiveField(6)
+  double ticketValue;
+  @HiveField(7)
+  String clientPhoneNumber;
+  @HiveField(8)
+  String clientName;
 
   TicketRaffle(
       {this.companyId,
@@ -26,7 +32,10 @@ class TicketRaffle {
       this.createdDate,
       this.raffleDate,
       this.raffleNumber,
-      this.formattedRaffleNumber});
+      this.formattedRaffleNumber,
+      this.clientName,
+      this.clientPhoneNumber,
+      this.ticketValue});
 
   factory TicketRaffle.fromJson(Map<String, dynamic> json) =>
       _$TicketRaffleFromJson(json);

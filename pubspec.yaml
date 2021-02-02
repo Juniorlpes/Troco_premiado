@@ -29,6 +29,7 @@ dependencies:
   lottie: ^0.7.0+1
   google_fonts: ^1.1.1
   intl: ^0.16.1
+  flutter_masked_text: ^0.8.0
 
 dev_dependencies:
   mockito: ^4.1.3

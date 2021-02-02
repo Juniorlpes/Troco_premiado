@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
-import 'package:troco_premiado/shared/cache/cache_controller.dart';
 import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/repositories/account_repository.dart';
 import 'package:troco_premiado/shared/repositories/interfaces/i_account.dart';
@@ -87,11 +85,12 @@ class AuthRepository implements IAuth {
 
   @override
   Future<bool> logOut() async {
-    final accountCache =
-        CacheController<Account>(cacheBoxEnum: CacheBox.Account);
+    // final accountCache =
+    //     CacheController<Account>(cacheBoxEnum: CacheBox.Account);
     try {
+      await _googleSignIn.signOut();
       await _auth.signOut();
-      accountCache.clear();
+      // accountCache.clear();
       return true;
     } catch (e) {
       return false;

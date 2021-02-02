@@ -3,6 +3,6 @@ import 'package:troco_premiado/app/app_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 void main() {
-  //WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(ModularApp(module: AppModule()));
 }
