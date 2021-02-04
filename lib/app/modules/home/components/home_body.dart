@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:troco_premiado/app/modules/home/home_controller.dart';
-import 'package:troco_premiado/shared/components/commom_animations.dart';
+import 'package:troco_premiado/shared/components/general_loading_pop.dart';
 
 class HomeBody extends StatelessWidget {
   final controller = Modular.get<HomeController>();
@@ -62,11 +62,7 @@ class HomeBody extends StatelessWidget {
             Card(
               child: InkWell(
                 onTap: () async {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (_) => SimpleLoadingAnimation(isWhite: true),
-                  );
+                  showGeneralLoadingPop(context);
                   final loggedOut = await controller.logOut();
                   Modular.to.pop();
                   if (loggedOut) {

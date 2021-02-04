@@ -74,66 +74,79 @@ class RaffleRepository implements IRaffle {
     final _firestore = FirebaseFirestore.instance;
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
-    String collectionName;
 
-    //Ticket Raffle Fields
-    int raffleNumber;
-    DateTime raffleDate;
+    try {
+      String collectionName;
 
-    final String createdBy = mainAccount.id;
-    final String companyId = mainAccount.idCompany;
-    final DateTime createdDate =
-        DateTime.now(); //DateFormat('dd-MM-yyyy').format(DateTime.now());
-    if (companyId == null) {
+      //Ticket Raffle Fields
+      int raffleNumber;
+      DateTime raffleDate;
+
+      final String createdBy = mainAccount?.id;
+      final String companyId = mainAccount?.idCompany;
+      final DateTime createdDate =
+          DateTime.now(); //DateFormat('dd-MM-yyyy').format(DateTime.now());
+      if (companyId == null) {
+        return null;
+      }
+      // ********
+
+      //Next RaffleDate
+      if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(1))) {
+        raffleDate = await cacheDateRaffles.getByKey(1);
+      } else if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(2))) {
+        raffleDate = await cacheDateRaffles.getByKey(2);
+      } else {
+        await cacheNextRaffleDates(DateTime.now());
+        raffleDate = await cacheDateRaffles.getByKey(1);
+      }
+      collectionName =
+          'ticket_raffle-${DateFormat('dd-MM-yyyy').format(raffleDate)}';
+      // *********
+
+      //raffle
+      var random = Random();
+      bool containsThisRaffleNumber = false;
+      do {
+        raffleNumber = random.nextInt(10000);
+
+        var dbRaffles = await _firestore
+            .collection(collectionName)
+            .where('raffleNumber', isEqualTo: raffleNumber)
+            .get();
+
+        if (dbRaffles.docs.isEmpty) {
+          containsThisRaffleNumber = false;
+        } else {
+          containsThisRaffleNumber = true;
+        }
+      } while (containsThisRaffleNumber);
+      // ****
+
+      final completedTicketRaffle = TicketRaffle(
+        companyId: companyId,
+        createdBy: createdBy,
+        createdDate: createdDate,
+        raffleDate: raffleDate,
+        raffleNumber: raffleNumber,
+        formattedRaffleNumber:
+            NumberFormat('00000').format(raffleNumber).replaceAll('', ' '),
+        clientPhoneNumber: phone,
+        clientName: clientName,
+        ticketValue: ticketValue,
+      );
+
+      await cacheRaffle(completedTicketRaffle);
+
+      await _firestore
+          .collection(collectionName)
+          .doc()
+          .set(completedTicketRaffle.toJson());
+
+      return completedTicketRaffle;
+    } catch (e) {
+      print(e);
       return null;
     }
-    // ********
-
-    //Next RaffleDate
-    if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(1))) {
-      raffleDate = await cacheDateRaffles.getByKey(1);
-    } else if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(2))) {
-      raffleDate = await cacheDateRaffles.getByKey(2);
-    } else {
-      await cacheNextRaffleDates(DateTime.now());
-      raffleDate = await cacheDateRaffles.getByKey(1);
-    }
-    collectionName =
-        'ticket_raffle-${DateFormat('dd-MM-yyyy').format(raffleDate)}';
-    // *********
-
-    //raffle
-    var random = Random();
-    bool containsThisRaffleNumber = false;
-    do {
-      raffleNumber = random.nextInt(10000);
-
-      var dbRaffles = await _firestore
-          .collection(collectionName)
-          .where('raffleNumber', isEqualTo: raffleNumber)
-          .get();
-
-      if (dbRaffles.docs.isEmpty) {
-        containsThisRaffleNumber = false;
-      } else {
-        containsThisRaffleNumber = true;
-      }
-    } while (containsThisRaffleNumber);
-    // ****
-
-    final completedTicketRaffle = TicketRaffle(
-      companyId: companyId,
-      createdBy: createdBy,
-      createdDate: createdDate,
-      raffleDate: raffleDate,
-      raffleNumber: raffleNumber,
-      formattedRaffleNumber: NumberFormat('00000').format(raffleNumber),
-      clientPhoneNumber: phone,
-      clientName: clientName,
-      ticketValue: ticketValue,
-    );
-
-    await cacheRaffle(completedTicketRaffle);
-    return completedTicketRaffle;
   }
 }

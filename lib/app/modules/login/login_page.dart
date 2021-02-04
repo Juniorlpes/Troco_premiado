@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:troco_premiado/app/modules/login/utils/pop_ups.dart';
-import 'package:troco_premiado/shared/components/commom_animations.dart';
+import 'package:troco_premiado/shared/components/general_loading_pop.dart';
 import 'login_controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -66,12 +66,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
                         ),
                         title: Text('Logar com Google'),
                         onTap: () async {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) =>
-                                SimpleLoadingAnimation(isWhite: true),
-                          );
+                          showGeneralLoadingPop(context);
                           final account = await controller.logInGoogle();
                           Modular.to.pop();
                           if (account != null) {

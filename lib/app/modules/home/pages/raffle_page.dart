@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:troco_premiado/app/modules/home/home_controller.dart';
+import 'package:troco_premiado/app/modules/home/pages/ticket_page.dart';
+import 'package:troco_premiado/shared/components/general_loading_pop.dart';
+import 'package:toast/toast.dart';
 
 class CreateRafflePage extends StatefulWidget {
   @override
@@ -8,6 +13,7 @@ class CreateRafflePage extends StatefulWidget {
 
 class _RafflePageState extends State<CreateRafflePage> {
   final _formKey = GlobalKey<FormState>();
+  final controller = Modular.get<HomeController>();
   final valueController =
       MoneyMaskedTextController(leftSymbol: 'R\$ ', decimalSeparator: ".");
   final nameController = TextEditingController();
@@ -74,9 +80,58 @@ class _RafflePageState extends State<CreateRafflePage> {
                     if (s.trim().isEmpty) {
                       return 'Campo obrigatório';
                     } else {
+                      final realNumber = s
+                          .trim()
+                          .replaceAll(' ', '')
+                          .replaceAll('(', '')
+                          .replaceAll(')', '')
+                          .replaceAll('-', '');
+                      if (realNumber.length != 11) {
+                        return 'Campo inválido';
+                      }
                       return null;
                     }
                   },
+                ),
+                const SizedBox(height: 30),
+                Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  child: RaisedButton(
+                    color: Colors.green,
+                    child: Text(
+                      'Gerar Ticket',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        showGeneralLoadingPop(context);
+                        final realPhone = phoneController.text
+                            .trim()
+                            .replaceAll(' ', '')
+                            .replaceAll('(', '')
+                            .replaceAll(')', '')
+                            .replaceAll('-', '');
+                        final realValue = double.parse(
+                            valueController.text.replaceAll('R\$', ''));
+
+                        final ticket = await controller.createTicketRaffle(
+                          nameController.text,
+                          realPhone,
+                          realValue,
+                        );
+                        Modular.to.pop();
+                        if (ticket == null) {
+                          Toast.show("Erro ao gerar Ticket", context,
+                              duration: Toast.LENGTH_LONG,
+                              gravity: Toast.BOTTOM);
+                        } else {
+                          Modular.to.pushReplacement(MaterialPageRoute(
+                              builder: (_) => TicketPage(ticket: ticket)));
+                        }
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
