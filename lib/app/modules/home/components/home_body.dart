@@ -40,7 +40,7 @@ class HomeBody extends StatelessWidget {
             ),
             Card(
               child: InkWell(
-                onTap: () {},
+                onTap: () => Modular.to.pushNamed('/home/history'),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,

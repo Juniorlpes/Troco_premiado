@@ -1,3 +1,4 @@
+import 'package:troco_premiado/app/modules/home/pages/history_page.dart';
 import 'package:troco_premiado/app/modules/home/pages/raffle_page.dart';
 
 import 'home_controller.dart';
@@ -16,6 +17,7 @@ class HomeModule extends ChildModule {
         ModularRouter(Modular.initialRoute,
             child: (_, args) => HomePage(args.data)),
         ModularRouter('/addTicket', child: (_, args) => CreateRafflePage()),
+        ModularRouter('/history', child: (_, args) => HistoryPage()),
       ];
 
   static Inject get to => Inject<HomeModule>.of();
