@@ -17,8 +17,16 @@ class Company {
   double longitude;
   @HiveField(4)
   String name;
+  @HiveField(5)
+  int luckyArea;
 
-  Company({this.address, this.id, this.latitude, this.longitude, this.name});
+  Company(
+      {this.address,
+      this.id,
+      this.latitude,
+      this.longitude,
+      this.name,
+      this.luckyArea});
 
   factory Company.fromJson(Map<String, dynamic> json) =>
       _$CompanyFromJson(json);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:troco_premiado/app/modules/home/home_controller.dart';
+import 'package:troco_premiado/app/modules/home/widgets/home_card.dart';
 import 'package:troco_premiado/shared/components/general_loading_pop.dart';
 
 class HomeBody extends StatelessWidget {
@@ -13,79 +14,41 @@ class HomeBody extends StatelessWidget {
           crossAxisCount: 3,
           primary: false,
           scrollDirection: Axis.vertical,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
           padding: const EdgeInsets.all(10),
           children: [
-            Card(
-              child: InkWell(
-                onTap: () => Modular.to.pushNamed('/home/addTicket'),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.monetization_on,
-                      size: 28,
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Novo Sorteio',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-              ),
+            HomeCard(
+              title: 'Novo Sorteio',
+              icon: Icons.monetization_on,
+              onTap: () => Modular.to.pushNamed('/home/addTicket'),
             ),
-            Card(
-              child: InkWell(
-                onTap: () => Modular.to.pushNamed('/home/history'),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.receipt,
-                      size: 28,
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Histórico',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-              ),
+            HomeCard(
+              title: 'Ver Pendêntes',
+              icon: Icons.pending_actions,
+              onTap: () => null,
             ),
-            Card(
-              child: InkWell(
-                onTap: () async {
-                  showGeneralLoadingPop(context);
-                  final loggedOut = await controller.logOut();
-                  Modular.to.pop();
-                  if (loggedOut) {
-                    Modular.to.pushReplacementNamed('/');
-                  }
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.exit_to_app,
-                      size: 28,
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Log out',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-              ),
+            HomeCard(
+              title: 'Pré cadastro',
+              icon: Icons.person_add,
+              onTap: () => null,
+            ),
+            HomeCard(
+              title: 'Histórico',
+              icon: Icons.receipt,
+              onTap: () => Modular.to.pushNamed('/home/history'),
+            ),
+            HomeCard(
+              title: 'Log out',
+              icon: Icons.exit_to_app,
+              onTap: () async {
+                showGeneralLoadingPop(context);
+                final loggedOut = await controller.logOut();
+                Modular.to.pop();
+                if (loggedOut) {
+                  Modular.to.pushReplacementNamed('/');
+                }
+              },
             ),
           ],
         ),

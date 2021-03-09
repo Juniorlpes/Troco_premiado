@@ -39,7 +39,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                controller.mainAccount.company,
+                controller.mainAccount.company ?? '',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 18, color: Colors.white60),

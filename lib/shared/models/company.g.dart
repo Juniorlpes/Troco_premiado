@@ -22,13 +22,14 @@ class CompanyAdapter extends TypeAdapter<Company> {
       latitude: fields[2] as double,
       longitude: fields[3] as double,
       name: fields[4] as String,
+      luckyArea: fields[5] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, Company obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.address)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class CompanyAdapter extends TypeAdapter<Company> {
       ..writeByte(3)
       ..write(obj.longitude)
       ..writeByte(4)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(5)
+      ..write(obj.luckyArea);
   }
 
   @override
@@ -63,6 +66,7 @@ Company _$CompanyFromJson(Map<String, dynamic> json) {
     latitude: (json['latitude'] as num)?.toDouble(),
     longitude: (json['longitude'] as num)?.toDouble(),
     name: json['name'] as String,
+    luckyArea: json['luckyArea'] as int,
   );
 }
 
@@ -72,4 +76,5 @@ Map<String, dynamic> _$CompanyToJson(Company instance) => <String, dynamic>{
       'latitude': instance.latitude,
       'longitude': instance.longitude,
       'name': instance.name,
+      'luckyArea': instance.luckyArea,
     };

@@ -11,12 +11,14 @@ import 'package:troco_premiado/shared/repositories/interfaces/i_raffle.dart';
 class RaffleRepository implements IRaffle {
   @override
   Future<void> cacheRaffleDates({int month, int year}) async {
+    //Toda segunda e quarta quarta-feira do mês tem sorteio. numeros de 0 a 99.999
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
     int wednesdayCount = 0;
     DateTime secondWendnesday;
     DateTime fourthWendnesday;
+    DateTime luckyWendnesday;
     bool hasSecondWen = false;
     bool hasFourthWen = false;
 
@@ -25,7 +27,7 @@ class RaffleRepository implements IRaffle {
       for (int day = 1; day < 32; day++) {
         var date = DateTime(year, month, day, 18);
         //Verifica se é uma quarta
-        if (date.weekday == 3) {
+        if (date.weekday == DateTime.wednesday) {
           wednesdayCount++;
         }
         //Verifica se é quarta de sorteio
@@ -37,12 +39,40 @@ class RaffleRepository implements IRaffle {
           hasFourthWen = true;
         }
       }
+      luckyWendnesday = getBigLuckyWendnesday(month: month, year: year);
     } catch (e) {
       print('ERROR!!');
       print(e);
     }
     await cacheDateRaffles.writeByKey(1, secondWendnesday);
     await cacheDateRaffles.writeByKey(2, fourthWendnesday);
+    await cacheDateRaffles.writeByKey(3, luckyWendnesday);
+  }
+
+  DateTime getBigLuckyWendnesday({int month, int year}) {
+    DateTime luckyWendnesday;
+    int luckyMonth;
+    int wednesdayCount = 0;
+
+    if (month < 5) {
+      luckyMonth = 4;
+    } else if (month < 9) {
+      luckyMonth = 8;
+    } else {
+      luckyMonth = 12;
+    }
+    for (int day = 1; day < 32; day++) {
+      var date = DateTime(year, luckyMonth, day, 18);
+      //Verifica se é uma quarta
+      if (date.weekday == DateTime.wednesday) {
+        wednesdayCount++;
+      }
+      if (wednesdayCount == 4) {
+        luckyWendnesday = date;
+        break;
+      }
+    }
+    return luckyWendnesday;
   }
 
   @override
@@ -71,6 +101,7 @@ class RaffleRepository implements IRaffle {
   @override
   Future<TicketRaffle> sortNumber(Account mainAccount, String clientName,
       String phone, double ticketValue) async {
+    //TODO: Review this method
     final _firestore = FirebaseFirestore.instance;
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
@@ -108,7 +139,7 @@ class RaffleRepository implements IRaffle {
       var random = Random();
       bool containsThisRaffleNumber = false;
       do {
-        raffleNumber = random.nextInt(10000);
+        raffleNumber = random.nextInt(99999);
 
         var dbRaffles = await _firestore
             .collection(collectionName)
@@ -130,7 +161,7 @@ class RaffleRepository implements IRaffle {
         raffleDate: raffleDate,
         raffleNumber: raffleNumber,
         formattedRaffleNumber:
-            NumberFormat('00000').format(raffleNumber).replaceAll('', ' '),
+            NumberFormat('000000').format(raffleNumber).replaceAll('', ' '),
         clientPhoneNumber: phone,
         clientName: clientName,
         ticketValue: ticketValue,
