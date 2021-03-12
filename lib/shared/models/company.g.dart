@@ -18,7 +18,7 @@ class CompanyAdapter extends TypeAdapter<Company> {
     };
     return Company(
       address: fields[0] as String,
-      id: fields[1] as int,
+      id: fields[1] as String,
       latitude: fields[2] as double,
       longitude: fields[3] as double,
       name: fields[4] as String,
@@ -62,7 +62,7 @@ class CompanyAdapter extends TypeAdapter<Company> {
 Company _$CompanyFromJson(Map<String, dynamic> json) {
   return Company(
     address: json['address'] as String,
-    id: json['id'] as int,
+    id: json['id'] as String,
     latitude: (json['latitude'] as num)?.toDouble(),
     longitude: (json['longitude'] as num)?.toDouble(),
     name: json['name'] as String,

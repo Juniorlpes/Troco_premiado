@@ -34,6 +34,29 @@ mixin _$HomeController on _HomeControllerBase, Store {
     });
   }
 
+  final _$mainCompanyAtom = Atom(name: '_HomeControllerBase.mainCompany');
+
+  @override
+  Company get mainCompany {
+    _$mainCompanyAtom.reportRead();
+    return super.mainCompany;
+  }
+
+  @override
+  set mainCompany(Company value) {
+    _$mainCompanyAtom.reportWrite(value, super.mainCompany, () {
+      super.mainCompany = value;
+    });
+  }
+
+  final _$getMainCompanyAsyncAction =
+      AsyncAction('_HomeControllerBase.getMainCompany');
+
+  @override
+  Future<void> getMainCompany() {
+    return _$getMainCompanyAsyncAction.run(() => super.getMainCompany());
+  }
+
   final _$getAccountUpdatedAsyncAction =
       AsyncAction('_HomeControllerBase.getAccountUpdated');
 
@@ -59,7 +82,8 @@ mixin _$HomeController on _HomeControllerBase, Store {
   @override
   String toString() {
     return '''
-mainAccount: ${mainAccount}
+mainAccount: ${mainAccount},
+mainCompany: ${mainCompany}
     ''';
   }
 }

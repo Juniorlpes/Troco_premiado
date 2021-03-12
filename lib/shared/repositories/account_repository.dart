@@ -56,9 +56,8 @@ class AccountRepository implements IAccount {
           email: email,
           name: name,
           active: false,
-          company: null,
+          companyId: null,
           //id: null, se o id for o doc referency, o attr id é desnecessario
-          idCompany: null,
         );
 
         await _firestore.collection('auth').doc().set(account.toJson());

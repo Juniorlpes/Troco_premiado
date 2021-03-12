@@ -38,12 +38,14 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              Text(
-                controller.mainAccount.company ?? '',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 18, color: Colors.white60),
-              ),
+              Observer(
+                builder: (_) => Text(
+                  controller.mainCompany?.name ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 18, color: Colors.white60),
+                ),
+              )
             ],
           ),
           actions: [
@@ -63,9 +65,14 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         ),
       ),
       body: Observer(
-        builder: (_) => (!controller.mainAccount.active)
-            ? InactiveAccountWidget()
-            : HomeBody(),
+        builder: (_) {
+          if (!controller.mainAccount.active) {
+            return InactiveAccountWidget();
+          } else {
+            controller.getMainCompany();
+            return HomeBody();
+          }
+        },
       ),
     );
   }

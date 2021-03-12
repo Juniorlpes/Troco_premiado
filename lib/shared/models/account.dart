@@ -10,23 +10,15 @@ class Account {
   @HiveField(0)
   bool active;
   @HiveField(1)
-  String company;
+  String companyId;
   @HiveField(2)
-  String idCompany;
-  @HiveField(3)
   String email;
-  @HiveField(4)
+  @HiveField(3)
   String id;
-  @HiveField(5)
+  @HiveField(4)
   String name;
 
-  Account(
-      {this.active,
-      this.company,
-      this.email,
-      this.id,
-      this.idCompany,
-      this.name});
+  Account({this.active, this.companyId, this.email, this.id, this.name});
 
   factory Account.fromJson(Map<String, dynamic> json) =>
       _$AccountFromJson(json);

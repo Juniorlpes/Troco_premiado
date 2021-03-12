@@ -18,29 +18,26 @@ class AccountAdapter extends TypeAdapter<Account> {
     };
     return Account(
       active: fields[0] as bool,
-      company: fields[1] as String,
-      email: fields[3] as String,
-      id: fields[4] as String,
-      idCompany: fields[2] as String,
-      name: fields[5] as String,
+      companyId: fields[1] as String,
+      email: fields[2] as String,
+      id: fields[3] as String,
+      name: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Account obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.active)
       ..writeByte(1)
-      ..write(obj.company)
+      ..write(obj.companyId)
       ..writeByte(2)
-      ..write(obj.idCompany)
-      ..writeByte(3)
       ..write(obj.email)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.id)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.name);
   }
 
@@ -62,18 +59,16 @@ class AccountAdapter extends TypeAdapter<Account> {
 Account _$AccountFromJson(Map<String, dynamic> json) {
   return Account(
     active: json['active'] as bool,
-    company: json['company'] as String,
+    companyId: json['companyId'] as String,
     email: json['email'] as String,
     id: json['id'] as String,
-    idCompany: json['idCompany'] as String,
     name: json['name'] as String,
   );
 }
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'active': instance.active,
-      'company': instance.company,
-      'idCompany': instance.idCompany,
+      'companyId': instance.companyId,
       'email': instance.email,
       'id': instance.id,
       'name': instance.name,

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
 import 'package:troco_premiado/shared/cache/cache_controller.dart';
 import 'package:troco_premiado/shared/models/account.dart';
+import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 import 'package:troco_premiado/shared/repositories/interfaces/i_raffle.dart';
 
@@ -99,22 +100,20 @@ class RaffleRepository implements IRaffle {
   }
 
   @override
-  Future<TicketRaffle> sortNumber(Account mainAccount, String clientName,
-      String phone, double ticketValue) async {
+  Future<TicketRaffle> sortNumber(Account mainAccount, Company mainCompany,
+      String clientName, String phone, double ticketValue) async {
     //TODO: Review this method
     final _firestore = FirebaseFirestore.instance;
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
     try {
-      String collectionName;
-
       //Ticket Raffle Fields
       int raffleNumber;
       DateTime raffleDate;
 
       final String createdBy = mainAccount?.id;
-      final String companyId = mainAccount?.idCompany;
+      final String companyId = mainAccount?.companyId;
       final DateTime createdDate =
           DateTime.now(); //DateFormat('dd-MM-yyyy').format(DateTime.now());
       if (companyId == null) {
@@ -131,9 +130,13 @@ class RaffleRepository implements IRaffle {
         await cacheNextRaffleDates(DateTime.now());
         raffleDate = await cacheDateRaffles.getByKey(1);
       }
-      collectionName =
-          'ticket_raffle-${DateFormat('dd-MM-yyyy').format(raffleDate)}';
       // *********
+
+      final CollectionReference raffleCollectionFirestoreReference = _firestore
+          .collection('raffle_tickets')
+          .doc('area_${mainCompany.luckyArea}')
+          .collection(
+              'raffle_tickets-${DateFormat('dd-MM-yyyy').format(raffleDate)}');
 
       //raffle
       var random = Random();
@@ -141,8 +144,7 @@ class RaffleRepository implements IRaffle {
       do {
         raffleNumber = random.nextInt(99999);
 
-        var dbRaffles = await _firestore
-            .collection(collectionName)
+        var dbRaffles = await raffleCollectionFirestoreReference
             .where('raffleNumber', isEqualTo: raffleNumber)
             .get();
 
@@ -167,10 +169,9 @@ class RaffleRepository implements IRaffle {
         ticketValue: ticketValue,
       );
 
-      await cacheRaffle(completedTicketRaffle);
+      //await cacheRaffle(completedTicketRaffle);
 
-      await _firestore
-          .collection(collectionName)
+      await raffleCollectionFirestoreReference
           .doc()
           .set(completedTicketRaffle.toJson());
 
@@ -179,5 +180,16 @@ class RaffleRepository implements IRaffle {
       print(e);
       return null;
     }
+  }
+
+  @override
+  Future<TicketRaffle> sortPendingTicket(
+      Account mainAccount,
+      Company mainCompany,
+      String clientName,
+      String phone,
+      double ticketValue) {
+    // TODO: implement sortPendingTicket
+    throw UnimplementedError();
   }
 }

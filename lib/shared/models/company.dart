@@ -10,7 +10,7 @@ class Company {
   @HiveField(0)
   String address;
   @HiveField(1)
-  int id;
+  String id;
   @HiveField(2)
   double latitude;
   @HiveField(3)
