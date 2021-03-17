@@ -217,8 +217,6 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - bluetooth_print (0.0.1):
-    - Flutter
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -342,7 +340,6 @@ PODS:
   - PromisesObjC (1.2.11)
 
 DEPENDENCIES:
-  - bluetooth_print (from `.symlinks/plugins/bluetooth_print/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -373,8 +370,6 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
-  bluetooth_print:
-    :path: ".symlinks/plugins/bluetooth_print/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_auth:
@@ -393,7 +388,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  bluetooth_print: 211fbcc327dbeabe8256fd92cf2515844005ad75
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   cloud_firestore: 19c6f947dd14be9d71695ea23eefde67cd8829c8
   Firebase: 8db6f2d1b2c5e2984efba4949a145875a8f65fe5

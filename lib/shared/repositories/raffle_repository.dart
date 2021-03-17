@@ -10,6 +10,12 @@ import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 import 'package:troco_premiado/shared/repositories/interfaces/i_raffle.dart';
 
 class RaffleRepository implements IRaffle {
+  FirebaseFirestore _firestore;
+
+  RaffleRepository({FirebaseFirestore firestore}) {
+    _firestore = firestore == null ? FirebaseFirestore.instance : firestore;
+  }
+
   @override
   Future<void> cacheRaffleDates({int month, int year}) async {
     //Toda segunda e quarta quarta-feira do mês tem sorteio. numeros de 0 a 99.999
@@ -103,7 +109,6 @@ class RaffleRepository implements IRaffle {
   Future<TicketRaffle> sortNumber(Account mainAccount, Company mainCompany,
       String clientName, String phone, double ticketValue) async {
     //TODO: Review this method
-    final _firestore = FirebaseFirestore.instance;
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
@@ -172,8 +177,7 @@ class RaffleRepository implements IRaffle {
       //await cacheRaffle(completedTicketRaffle);
 
       await raffleCollectionFirestoreReference
-          .doc()
-          .set(completedTicketRaffle.toJson());
+          .add(completedTicketRaffle.toJson());
 
       return completedTicketRaffle;
     } catch (e) {
@@ -183,13 +187,31 @@ class RaffleRepository implements IRaffle {
   }
 
   @override
-  Future<TicketRaffle> sortPendingTicket(
+  Future<TicketRaffle> generatePendingTicket(
       Account mainAccount,
       Company mainCompany,
       String clientName,
       String phone,
       double ticketValue) {
-    // TODO: implement sortPendingTicket
+    // TODO: implement generatePendingTicket
     throw UnimplementedError();
+  }
+
+  @override
+  Future<List<TicketRaffle>> getPendingTickets(Company company) async {
+    List<TicketRaffle> pendingTickets = [];
+    var rawPendingList = await _firestore
+        .collection('companies')
+        .doc(company.id)
+        .collection('pending_tickets')
+        .get();
+
+    for (int i = 0; i < rawPendingList.docs.length; i++) {
+      if (rawPendingList.docs[i].exists) {
+        pendingTickets
+            .add(TicketRaffle.fromJson(rawPendingList.docs[i].data()));
+      }
+    }
+    return pendingTickets;
   }
 }
