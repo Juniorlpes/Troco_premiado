@@ -7,10 +7,12 @@ import 'package:troco_premiado/shared/cache/cache_controller.dart';
 import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
-import 'package:troco_premiado/shared/repositories/interfaces/i_raffle.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_raffle_facade.dart';
 
-class RaffleRepository implements IRaffle {
+class RaffleRepository implements IRaffleFacade {
   FirebaseFirestore _firestore;
+  final cacheDateRaffles =
+      CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
   RaffleRepository({FirebaseFirestore firestore}) {
     _firestore = firestore == null ? FirebaseFirestore.instance : firestore;
@@ -19,13 +21,10 @@ class RaffleRepository implements IRaffle {
   @override
   Future<void> cacheRaffleDates({int month, int year}) async {
     //Toda segunda e quarta quarta-feira do mês tem sorteio. numeros de 0 a 99.999
-    final cacheDateRaffles =
-        CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
     int wednesdayCount = 0;
     DateTime secondWendnesday;
     DateTime fourthWendnesday;
-    DateTime luckyWendnesday;
     bool hasSecondWen = false;
     bool hasFourthWen = false;
 
@@ -46,17 +45,16 @@ class RaffleRepository implements IRaffle {
           hasFourthWen = true;
         }
       }
-      luckyWendnesday = getBigLuckyWendnesday(month: month, year: year);
+      await cacheBigLuckyWendnesday(month: month, year: year);
     } catch (e) {
       print('ERROR!!');
       print(e);
     }
     await cacheDateRaffles.writeByKey(1, secondWendnesday);
     await cacheDateRaffles.writeByKey(2, fourthWendnesday);
-    await cacheDateRaffles.writeByKey(3, luckyWendnesday);
   }
 
-  DateTime getBigLuckyWendnesday({int month, int year}) {
+  Future<void> cacheBigLuckyWendnesday({int month, int year}) async {
     DateTime luckyWendnesday;
     int luckyMonth;
     int wednesdayCount = 0;
@@ -79,7 +77,7 @@ class RaffleRepository implements IRaffle {
         break;
       }
     }
-    return luckyWendnesday;
+    await cacheDateRaffles.writeByKey(3, luckyWendnesday);
   }
 
   @override
@@ -98,24 +96,19 @@ class RaffleRepository implements IRaffle {
   }
 
   @override
-  Future<bool> cacheRaffle(TicketRaffle raffle) async {
-    final cacheRaffles =
-        CacheController<TicketRaffle>(cacheBoxEnum: CacheBox.Raffle);
-
-    return await cacheRaffles.write(raffle) != null;
-  }
-
-  @override
-  Future<TicketRaffle> sortNumber(Account mainAccount, Company mainCompany,
-      String clientName, String phone, double ticketValue) async {
+  Future<TicketRaffle> generateRealTicket(
+      Account mainAccount,
+      Company mainCompany,
+      String clientName,
+      String phone,
+      double ticketValue) async {
     //TODO: Review this method
-    final cacheDateRaffles =
-        CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
     try {
       //Ticket Raffle Fields
       int raffleNumber;
       DateTime raffleDate;
+      DateTime bigLuckyaffleDate;
 
       final String createdBy = mainAccount?.id;
       final String companyId = mainAccount?.companyId;
@@ -127,38 +120,24 @@ class RaffleRepository implements IRaffle {
       // ********
 
       //Next RaffleDate
-      if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(1))) {
-        raffleDate = await cacheDateRaffles.getByKey(1);
-      } else if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(2))) {
-        raffleDate = await cacheDateRaffles.getByKey(2);
-      } else {
-        await cacheNextRaffleDates(DateTime.now());
-        raffleDate = await cacheDateRaffles.getByKey(1);
-      }
+      raffleDate = await _getNextRaffleDate();
+      bigLuckyaffleDate = await cacheDateRaffles.getByKey(3);
       // *********
 
-      final CollectionReference raffleCollectionFirestoreReference = _firestore
+      final CollectionReference raffleCollectionFirestore = _firestore
           .collection('raffle_tickets')
           .doc('area_${mainCompany.luckyArea}')
           .collection(
               'raffle_tickets-${DateFormat('dd-MM-yyyy').format(raffleDate)}');
 
+      final CollectionReference bigLuckyRaffleCollectionFirestore = _firestore
+          .collection('raffle_tickets')
+          .doc('area_${mainCompany.luckyArea}')
+          .collection(
+              'raffle_tickets-${DateFormat('dd-MM-yyyy').format(bigLuckyaffleDate)}');
+
       //raffle
-      var random = Random();
-      bool containsThisRaffleNumber = false;
-      do {
-        raffleNumber = random.nextInt(99999);
-
-        var dbRaffles = await raffleCollectionFirestoreReference
-            .where('raffleNumber', isEqualTo: raffleNumber)
-            .get();
-
-        if (dbRaffles.docs.isEmpty) {
-          containsThisRaffleNumber = false;
-        } else {
-          containsThisRaffleNumber = true;
-        }
-      } while (containsThisRaffleNumber);
+      raffleNumber = await _getTheRaffleNumber(raffleCollectionFirestore);
       // ****
 
       final completedTicketRaffle = TicketRaffle(
@@ -174,9 +153,8 @@ class RaffleRepository implements IRaffle {
         ticketValue: ticketValue,
       );
 
-      //await cacheRaffle(completedTicketRaffle);
-
-      await raffleCollectionFirestoreReference
+      await raffleCollectionFirestore.add(completedTicketRaffle.toJson());
+      await bigLuckyRaffleCollectionFirestore
           .add(completedTicketRaffle.toJson());
 
       return completedTicketRaffle;
@@ -213,5 +191,43 @@ class RaffleRepository implements IRaffle {
       }
     }
     return pendingTickets;
+  }
+
+  @override
+  Future<void> savePendingTicketAsReal(TicketRaffle ticket) {
+    // TODO: implement savePendingTicketAsReal
+    throw UnimplementedError();
+  }
+
+  Future<DateTime> _getNextRaffleDate() async {
+    if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(1))) {
+      return await cacheDateRaffles.getByKey(1);
+    } else if (DateTime.now().isBefore(await cacheDateRaffles.getByKey(2))) {
+      return await cacheDateRaffles.getByKey(2);
+    } else {
+      await cacheNextRaffleDates(DateTime.now());
+      return await cacheDateRaffles.getByKey(1);
+    }
+  }
+
+  Future<int> _getTheRaffleNumber(
+      CollectionReference raffleFirebaseCollection) async {
+    var random = Random();
+    int raffleNumber;
+    bool containsThisRaffleNumber = false;
+    do {
+      raffleNumber = random.nextInt(99999);
+
+      var dbRaffles = await raffleFirebaseCollection
+          .where('raffleNumber', isEqualTo: raffleNumber)
+          .get();
+
+      if (dbRaffles.docs.isEmpty) {
+        containsThisRaffleNumber = false;
+      } else {
+        containsThisRaffleNumber = true;
+      }
+    } while (containsThisRaffleNumber);
+    return raffleNumber;
   }
 }

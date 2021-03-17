@@ -12,7 +12,7 @@ import 'package:troco_premiado/shared/models/company.dart';
 
 */
 
-abstract class IAccount {
+abstract class IAccountFacade {
   Future<Account> getAccount(String email);
   Future<Account> registerAccount(
       {@required String email, @required String name});

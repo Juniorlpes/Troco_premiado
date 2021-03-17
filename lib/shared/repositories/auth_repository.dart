@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/repositories/account_repository.dart';
-import 'package:troco_premiado/shared/repositories/interfaces/i_account.dart';
-import 'package:troco_premiado/shared/repositories/interfaces/i_auth.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_account_facade.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_auth_facade.dart';
 
-class AuthRepository implements IAuth {
+class AuthRepository implements IAuthFacade {
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: <String>[
     'email' //,
     //'https://www.googleapis.com/auth/contacts.readonly',
@@ -19,7 +19,7 @@ class AuthRepository implements IAuth {
 
   @override
   Future<Account> logInGoogle() async {
-    IAccount accountRepository = AccountRepository();
+    IAccountFacade accountRepository = AccountRepository();
     try {
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth =
@@ -44,7 +44,7 @@ class AuthRepository implements IAuth {
 
   @override
   Future<Account> logInGoogleSilently() async {
-    IAccount accountRepository = AccountRepository();
+    IAccountFacade accountRepository = AccountRepository();
     try {
       final GoogleSignInAccount googleUser =
           await _googleSignIn.signInSilently();
@@ -67,7 +67,7 @@ class AuthRepository implements IAuth {
 
   @override
   Future<Account> getCurrentAccount() async {
-    IAccount accountRepository = AccountRepository();
+    IAccountFacade accountRepository = AccountRepository();
     try {
       var user = _auth.currentUser;
 

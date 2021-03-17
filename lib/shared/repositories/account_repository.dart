@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/account.dart';
-import 'package:troco_premiado/shared/repositories/interfaces/i_account.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_account_facade.dart';
 
-class AccountRepository implements IAccount {
+class AccountRepository implements IAccountFacade {
   FirebaseFirestore _firestore;
 
   AccountRepository({FirebaseFirestore firestore}) {

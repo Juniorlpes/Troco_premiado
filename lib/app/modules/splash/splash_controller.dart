@@ -8,8 +8,8 @@ import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 import 'package:troco_premiado/shared/repositories/auth_repository.dart';
-import 'package:troco_premiado/shared/repositories/interfaces/i_auth.dart';
-import 'package:troco_premiado/shared/repositories/interfaces/i_raffle.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_auth_facade.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_raffle_facade.dart';
 import 'package:troco_premiado/shared/repositories/raffle_repository.dart';
 
 part 'splash_controller.g.dart';
@@ -18,7 +18,7 @@ part 'splash_controller.g.dart';
 class SplashController = _SplashControllerBase with _$SplashController;
 
 abstract class _SplashControllerBase with Store {
-  IAuth _authRepository;
+  IAuthFacade _authRepository;
 
   Account prevAccount;
 
@@ -52,7 +52,7 @@ abstract class _SplashControllerBase with Store {
   }
 
   Future<void> verifyAndSetRaffleDatesCache() async {
-    IRaffle raffleRepository = RaffleRepository();
+    IRaffleFacade raffleRepository = RaffleRepository();
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
