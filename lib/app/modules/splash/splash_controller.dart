@@ -9,8 +9,8 @@ import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 import 'package:troco_premiado/shared/repositories/auth_repository.dart';
 import 'package:troco_premiado/shared/repositories/interfaces/i_auth_facade.dart';
-import 'package:troco_premiado/shared/repositories/interfaces/i_raffle_facade.dart';
-import 'package:troco_premiado/shared/repositories/raffle_repository.dart';
+import 'package:troco_premiado/shared/repositories/interfaces/i_raffle_dates_facade.dart';
+import 'package:troco_premiado/shared/repositories/raffle_date_repository.dart';
 
 part 'splash_controller.g.dart';
 
@@ -52,21 +52,21 @@ abstract class _SplashControllerBase with Store {
   }
 
   Future<void> verifyAndSetRaffleDatesCache() async {
-    IRaffleFacade raffleRepository = RaffleRepository();
+    IRaffleDateFacade raffleDateFacade = RaffleDatesRepository();
     final cacheDateRaffles =
         CacheController<DateTime>(cacheBoxEnum: CacheBox.DateRaffles);
 
     var date2 = await cacheDateRaffles.getByKey(2);
 
     if (date2 == null) {
-      await raffleRepository.cacheRaffleDates(
+      await raffleDateFacade.cacheRaffleDates(
           month: DateTime.now().month, year: DateTime.now().year);
 
       date2 = await cacheDateRaffles.getByKey(2);
     }
 
     if (DateTime.now().isAfter(date2)) {
-      await raffleRepository.cacheNextRaffleDates(date2);
+      await raffleDateFacade.cacheNextRafflesDates(date2);
     }
   }
 }
