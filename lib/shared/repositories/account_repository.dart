@@ -12,15 +12,6 @@ class AccountRepository implements IAccountFacade {
 
   @override
   Future<Account> getAccount(String email) async {
-    // final accountCache =
-    //     CacheController<Account>(cacheBoxEnum: CacheBox.Account);
-
-    // var cachedAccount = await accountCache.getByKey('account');
-
-    // if (cachedAccount != null && cachedAccount.active ?? false) {
-    //   return cachedAccount;
-    // }
-
     try {
       var rawDocs = await _firestore
           .collection('auth')
@@ -32,8 +23,6 @@ class AccountRepository implements IAccountFacade {
         return null;
       }
 
-      // await accountCache.writeByKey('account', Account.fromJson(doc.data()));
-
       return Account.fromJson(doc.data());
     } catch (e) {
       print(e);
@@ -43,8 +32,6 @@ class AccountRepository implements IAccountFacade {
 
   @override
   Future<Account> registerAccount({String email, String name}) async {
-    // final accountCache =
-    //     CacheController<Account>(cacheBoxEnum: CacheBox.Account);
     try {
       var rawDocs = await _firestore
           .collection('auth')
@@ -55,10 +42,7 @@ class AccountRepository implements IAccountFacade {
         var account = Account(
           email: email,
           name: name,
-          active: false,
-          companyId: null,
-          //id: null, se o id for o doc referency, o attr id é desnecessario
-        );
+        ); //id,company serao colocados depois. type vai automatico
 
         await _firestore.collection('auth').doc().set(account.toJson());
 
@@ -70,8 +54,6 @@ class AccountRepository implements IAccountFacade {
         final idAccount = newAccount.docs[0].reference.id;
 
         await newAccount.docs[0].reference.update({'id': idAccount});
-
-        // await accountCache.writeByKey('account', account);
 
         return account..id = idAccount;
       }

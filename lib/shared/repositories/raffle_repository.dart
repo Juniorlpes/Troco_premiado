@@ -71,6 +71,7 @@ class RaffleRepository implements IRaffleFacade {
         createdBy: createdBy,
         createdDate: createdDate,
         raffleDate: raffleDate,
+        bigLuckyaffleDate: bigLuckyaffleDate,
         raffleNumber: raffleNumber,
         formattedRaffleNumber:
             NumberFormat('000000').format(raffleNumber).replaceAll('', ' '),
@@ -96,9 +97,47 @@ class RaffleRepository implements IRaffleFacade {
       Company mainCompany,
       String clientName,
       String phone,
-      double ticketValue) {
-    // TODO: implement generatePendingTicket
-    throw UnimplementedError();
+      double ticketValue) async {
+    try {
+      DateTime raffleDate;
+      DateTime bigLuckyaffleDate;
+
+      final String createdBy = mainAccount?.id;
+      final String companyId = mainAccount?.companyId;
+      final DateTime createdDate =
+          DateTime.now(); //DateFormat('dd-MM-yyyy').format(DateTime.now());
+      if (companyId == null) {
+        return null;
+      }
+      // ********
+
+      //Next RaffleDate
+      raffleDate = await datesRepository.getNextRaffleDate();
+      bigLuckyaffleDate = await datesRepository.getBigLuckyRaffleDate();
+      // *********
+
+      final CollectionReference collectionFirestore = _firestore
+          .collection('companies')
+          .doc(mainCompany.id)
+          .collection('pending_tickets');
+
+      final pendingTicketRaffle = TicketRaffle(
+        companyId: companyId,
+        createdBy: createdBy,
+        createdDate: createdDate,
+        raffleDate: raffleDate,
+        bigLuckyaffleDate: bigLuckyaffleDate,
+        clientPhoneNumber: phone,
+        clientName: clientName,
+        ticketValue: ticketValue,
+      );
+
+      await collectionFirestore.add(pendingTicketRaffle.toJson());
+      return pendingTicketRaffle;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   @override
@@ -120,9 +159,39 @@ class RaffleRepository implements IRaffleFacade {
   }
 
   @override
-  Future<void> savePendingTicketAsReal(TicketRaffle ticket) {
-    // TODO: implement savePendingTicketAsReal
-    throw UnimplementedError();
+  Future<void> savePendingTicketAsReal(
+      TicketRaffle ticket, Company company) async {
+    int raffleNumber;
+    var periodString = _getPeriodString(ticket.bigLuckyaffleDate);
+
+    final CollectionReference raffleCollectionFirestore = _firestore
+        .collection('raffle_tickets')
+        .doc('area_${company.luckyArea}')
+        .collection(periodString)
+        .doc('tickets')
+        .collection(
+            'raffle_ticket-${DateFormat('dd-MM-yyyy').format(ticket.raffleDate)}');
+
+    final CollectionReference bigLuckyRaffleCollectionFirestore = _firestore
+        .collection('raffle_tickets')
+        .doc('area_${company.luckyArea}')
+        .collection(periodString)
+        .doc('tickets')
+        .collection(
+            'raffle_ticket-${DateFormat('dd-MM-yyyy').format(ticket.bigLuckyaffleDate)}');
+
+    //raffle
+    raffleNumber = await _getTheRaffleNumber(bigLuckyRaffleCollectionFirestore);
+    // ****
+
+    ticket.raffleNumber = raffleNumber;
+    ticket.formattedRaffleNumber =
+        NumberFormat('000000').format(raffleNumber).replaceAll('', ' ');
+
+    await raffleCollectionFirestore.add(ticket.toJson());
+    await bigLuckyRaffleCollectionFirestore.add(ticket.toJson());
+
+    deletePendingTicket(company: company, ticket: ticket);
   }
 
   String _getPeriodString(DateTime date) {
@@ -157,5 +226,19 @@ class RaffleRepository implements IRaffleFacade {
       }
     } while (containsThisRaffleNumber);
     return raffleNumber;
+  }
+
+  @override
+  Future<void> deletePendingTicket(
+      {TicketRaffle ticket, Company company}) async {
+    var rawPendingList = _firestore
+        .collection('companies')
+        .doc(company.id)
+        .collection('pending_tickets')
+        .where('clientPhoneNumber', isEqualTo: ticket.clientPhoneNumber)
+        .where('ticketValue', isEqualTo: ticket.ticketValue);
+
+    var pendingToDelete = await rawPendingList.get();
+    pendingToDelete.docs.first.reference.delete();
   }
 }

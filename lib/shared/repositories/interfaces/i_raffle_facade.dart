@@ -7,7 +7,8 @@ abstract class IRaffleFacade {
       Company mainCompany, String clientName, String phone, double ticketValue);
   Future<TicketRaffle> generatePendingTicket(Account mainAccount,
       Company mainCompany, String clientName, String phone, double ticketValue);
-  Future<void> savePendingTicketAsReal(TicketRaffle ticket);
+  Future<void> savePendingTicketAsReal(TicketRaffle ticket, Company company);
   Future<List<TicketRaffle>> getPendingTickets(Company company);
+  Future<void> deletePendingTicket({TicketRaffle ticket, Company company});
   //Future<bool> cacheRaffle(TicketRaffle raffle);
 }

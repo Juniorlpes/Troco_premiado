@@ -3,67 +3,18 @@
 part of 'account.dart';
 
 // **************************************************************************
-// TypeAdapterGenerator
-// **************************************************************************
-
-class AccountAdapter extends TypeAdapter<Account> {
-  @override
-  final int typeId = 1;
-
-  @override
-  Account read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Account(
-      active: fields[0] as bool,
-      companyId: fields[1] as String,
-      email: fields[2] as String,
-      id: fields[3] as String,
-      name: fields[4] as String,
-    );
-  }
-
-  @override
-  void write(BinaryWriter writer, Account obj) {
-    writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.active)
-      ..writeByte(1)
-      ..write(obj.companyId)
-      ..writeByte(2)
-      ..write(obj.email)
-      ..writeByte(3)
-      ..write(obj.id)
-      ..writeByte(4)
-      ..write(obj.name);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AccountAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
 Account _$AccountFromJson(Map<String, dynamic> json) {
   return Account(
-    active: json['active'] as bool,
-    companyId: json['companyId'] as String,
     email: json['email'] as String,
-    id: json['id'] as String,
     name: json['name'] as String,
-  );
+  )
+    ..active = json['active'] as bool
+    ..companyId = json['companyId'] as String
+    ..id = json['id'] as String
+    ..userType = _$enumDecodeNullable(_$EUserTypeEnumMap, json['userType']);
 }
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
@@ -72,4 +23,43 @@ Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'email': instance.email,
       'id': instance.id,
       'name': instance.name,
+      'userType': _$EUserTypeEnumMap[instance.userType],
     };
+
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
+}
+
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$EUserTypeEnumMap = {
+  EUserType.DEFAULT: 1,
+  EUserType.COMPANY_OWNER: 2,
+  EUserType.ADMIN: 3,
+};

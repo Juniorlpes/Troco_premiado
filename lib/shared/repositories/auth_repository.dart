@@ -6,6 +6,8 @@ import 'package:troco_premiado/shared/repositories/interfaces/i_account_facade.d
 import 'package:troco_premiado/shared/repositories/interfaces/i_auth_facade.dart';
 
 class AuthRepository implements IAuthFacade {
+  IAccountFacade _accountRepository = AccountRepository();
+
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: <String>[
     'email' //,
     //'https://www.googleapis.com/auth/contacts.readonly',
@@ -19,7 +21,6 @@ class AuthRepository implements IAuthFacade {
 
   @override
   Future<Account> logInGoogle() async {
-    IAccountFacade accountRepository = AccountRepository();
     try {
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth =
@@ -31,7 +32,7 @@ class AuthRepository implements IAuthFacade {
       );
       final authResult = await _auth.signInWithCredential(credential);
 
-      var account = await accountRepository.registerAccount(
+      var account = await _accountRepository.registerAccount(
         email: authResult.user.email,
         name: authResult.user.displayName,
       );
@@ -44,7 +45,6 @@ class AuthRepository implements IAuthFacade {
 
   @override
   Future<Account> logInGoogleSilently() async {
-    IAccountFacade accountRepository = AccountRepository();
     try {
       final GoogleSignInAccount googleUser =
           await _googleSignIn.signInSilently();
@@ -57,7 +57,7 @@ class AuthRepository implements IAuthFacade {
       );
       final authResult = await _auth.signInWithCredential(credential);
 
-      var account = await accountRepository.getAccount(authResult.user.email);
+      var account = await _accountRepository.getAccount(authResult.user.email);
 
       return account;
     } catch (e) {
@@ -67,7 +67,6 @@ class AuthRepository implements IAuthFacade {
 
   @override
   Future<Account> getCurrentAccount() async {
-    IAccountFacade accountRepository = AccountRepository();
     try {
       var user = _auth.currentUser;
 
@@ -75,7 +74,7 @@ class AuthRepository implements IAuthFacade {
         return null;
       }
 
-      var account = await accountRepository.getAccount(user.email);
+      var account = await _accountRepository.getAccount(user.email);
 
       return account;
     } catch (e) {

@@ -1,5 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
+import 'package:troco_premiado/shared/cache/cache_controller.dart';
 import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
@@ -31,13 +33,23 @@ abstract class _HomeControllerBase with Store {
 
   @action
   Future<void> getMainCompany() async {
-    //TODO: Improve this
-    do {
-      mainCompany = await _accountRepository.getCompany(mainAccount.companyId);
-      if (mainCompany == null) {
-        await Future<void>.delayed(Duration(milliseconds: 500));
-      }
-    } while (mainCompany == null);
+    //TODO: put Error mensage and review this method
+    final companyCache =
+        CacheController<Company>(cacheBoxEnum: CacheBox.Company);
+
+    mainCompany = await companyCache.getByKey('mainCompany');
+
+    if (mainCompany != null) {
+      return;
+    }
+    mainCompany = await _accountRepository.getCompany(mainAccount.companyId);
+    companyCache.writeByKey('mainCompany', mainCompany);
+    // do {
+    //   mainCompany = await _accountRepository.getCompany(mainAccount.companyId);
+    //   if (mainCompany == null) {
+    //     await Future<void>.delayed(Duration(milliseconds: 500));
+    //   }
+    // } while (mainCompany == null);
   }
 
   @action
