@@ -2,6 +2,7 @@ import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
 import 'package:troco_premiado/shared/cache/cache_controller.dart';
+import 'package:troco_premiado/shared/enums/request_status.dart';
 import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/models/company.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
@@ -21,6 +22,13 @@ abstract class _HomeControllerBase with Store {
   IAuthFacade _authRepository = AuthRepository();
   IAccountFacade _accountRepository = AccountRepository();
   IRaffleFacade _raffleRepository = RaffleRepository();
+
+  @observable
+  RequestStatus pendingRequestStatus = RequestStatus.None;
+
+  @observable
+  ObservableList<TicketRaffle> pendingTicketList =
+      <TicketRaffle>[].asObservable();
 
   @observable
   Account mainAccount;
@@ -72,8 +80,41 @@ abstract class _HomeControllerBase with Store {
         mainAccount, mainCompany, clientName, phone, ticketValue);
   }
 
-  Future<List<TicketRaffle>> getPendingTickets() async {
-    return await _raffleRepository.getPendingTickets(mainCompany);
+  @action
+  Future<void> getPendingTickets() async {
+    pendingTicketList.clear();
+    pendingRequestStatus = RequestStatus.Loading;
+    try {
+      var list = await _raffleRepository.getPendingTickets(mainCompany);
+      if (list.isEmpty) {
+        //TODO: Ver se a lista vazia vem null ou []
+        pendingRequestStatus = RequestStatus.Success;
+        return;
+      }
+      pendingTicketList.addAll(list);
+      pendingRequestStatus = RequestStatus.Success;
+    } catch (e) {
+      pendingRequestStatus = RequestStatus.Fail;
+    }
+  }
+
+  @action
+  Future<void> saveTicketAsReal(TicketRaffle ticket, double oldValue) async {
+    await _raffleRepository.savePendingTicketAsReal(
+        company: mainCompany, ticket: ticket, oldValue: oldValue);
+    pendingTicketList.remove(ticket);
+  }
+
+  @action
+  Future<void> removeTicketFromPendingList(TicketRaffle ticket) async {
+    await _raffleRepository.deletePendingTicket(
+        company: mainCompany, ticket: ticket);
+    pendingTicketList.remove(ticket);
+  }
+
+  @action
+  void clearPendingList() {
+    pendingTicketList.clear();
   }
 
   Future<bool> logOut() async {

@@ -21,6 +21,9 @@ TicketRaffle _$TicketRaffleFromJson(Map<String, dynamic> json) {
     clientName: json['clientName'] as String,
     clientPhoneNumber: json['clientPhoneNumber'] as String,
     ticketValue: (json['ticketValue'] as num)?.toDouble(),
+    bigLuckyaffleDate: json['bigLuckyaffleDate'] == null
+        ? null
+        : DateTime.parse(json['bigLuckyaffleDate'] as String),
   );
 }
 
@@ -30,6 +33,7 @@ Map<String, dynamic> _$TicketRaffleToJson(TicketRaffle instance) =>
       'companyId': instance.companyId,
       'createdDate': instance.createdDate?.toIso8601String(),
       'raffleDate': instance.raffleDate?.toIso8601String(),
+      'bigLuckyaffleDate': instance.bigLuckyaffleDate?.toIso8601String(),
       'raffleNumber': instance.raffleNumber,
       'formattedRaffleNumber': instance.formattedRaffleNumber,
       'ticketValue': instance.ticketValue,

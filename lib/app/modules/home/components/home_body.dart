@@ -25,10 +25,12 @@ class HomeBody extends StatelessWidget {
                   Modular.to.pushNamed('/home/addTicket', arguments: false),
             ),
             HomeCard(
-              title: 'Ver Pendêntes',
-              icon: Icons.pending_actions,
-              onTap: () => null,
-            ),
+                title: 'Ver Pendêntes',
+                icon: Icons.pending_actions,
+                onTap: () {
+                  controller.getPendingTickets();
+                  Modular.to.pushNamed('/home/pending');
+                }),
             HomeCard(
               title: 'Pré cadastro',
               icon: Icons.person_add,

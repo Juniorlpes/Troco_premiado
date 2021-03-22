@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:troco_premiado/shared/models/account.dart';
 import 'package:troco_premiado/shared/models/company.dart';
@@ -160,7 +161,9 @@ class RaffleRepository implements IRaffleFacade {
 
   @override
   Future<void> savePendingTicketAsReal(
-      TicketRaffle ticket, Company company) async {
+      {@required TicketRaffle ticket,
+      @required Company company,
+      double oldValue}) async {
     int raffleNumber;
     var periodString = _getPeriodString(ticket.bigLuckyaffleDate);
 
@@ -191,7 +194,8 @@ class RaffleRepository implements IRaffleFacade {
     await raffleCollectionFirestore.add(ticket.toJson());
     await bigLuckyRaffleCollectionFirestore.add(ticket.toJson());
 
-    deletePendingTicket(company: company, ticket: ticket);
+    deletePendingTicket(
+        company: company, ticket: ticket..ticketValue = oldValue);
   }
 
   String _getPeriodString(DateTime date) {
@@ -230,7 +234,7 @@ class RaffleRepository implements IRaffleFacade {
 
   @override
   Future<void> deletePendingTicket(
-      {TicketRaffle ticket, Company company}) async {
+      {@required TicketRaffle ticket, @required Company company}) async {
     var rawPendingList = _firestore
         .collection('companies')
         .doc(company.id)
@@ -239,6 +243,6 @@ class RaffleRepository implements IRaffleFacade {
         .where('ticketValue', isEqualTo: ticket.ticketValue);
 
     var pendingToDelete = await rawPendingList.get();
-    pendingToDelete.docs.first.reference.delete();
+    await pendingToDelete.docs.first.reference.delete();
   }
 }

@@ -19,6 +19,39 @@ final $HomeController = BindInject(
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HomeController on _HomeControllerBase, Store {
+  final _$pendingRequestStatusAtom =
+      Atom(name: '_HomeControllerBase.pendingRequestStatus');
+
+  @override
+  RequestStatus get pendingRequestStatus {
+    _$pendingRequestStatusAtom.reportRead();
+    return super.pendingRequestStatus;
+  }
+
+  @override
+  set pendingRequestStatus(RequestStatus value) {
+    _$pendingRequestStatusAtom.reportWrite(value, super.pendingRequestStatus,
+        () {
+      super.pendingRequestStatus = value;
+    });
+  }
+
+  final _$pendingTicketListAtom =
+      Atom(name: '_HomeControllerBase.pendingTicketList');
+
+  @override
+  ObservableList<TicketRaffle> get pendingTicketList {
+    _$pendingTicketListAtom.reportRead();
+    return super.pendingTicketList;
+  }
+
+  @override
+  set pendingTicketList(ObservableList<TicketRaffle> value) {
+    _$pendingTicketListAtom.reportWrite(value, super.pendingTicketList, () {
+      super.pendingTicketList = value;
+    });
+  }
+
   final _$mainAccountAtom = Atom(name: '_HomeControllerBase.mainAccount');
 
   @override
@@ -65,6 +98,23 @@ mixin _$HomeController on _HomeControllerBase, Store {
     return _$getAccountUpdatedAsyncAction.run(() => super.getAccountUpdated());
   }
 
+  final _$getPendingTicketsAsyncAction =
+      AsyncAction('_HomeControllerBase.getPendingTickets');
+
+  @override
+  Future<void> getPendingTickets() {
+    return _$getPendingTicketsAsyncAction.run(() => super.getPendingTickets());
+  }
+
+  final _$removeTicketFromPendingListAsyncAction =
+      AsyncAction('_HomeControllerBase.removeTicketFromPendingList');
+
+  @override
+  Future<void> removeTicketFromPendingList(TicketRaffle ticket) {
+    return _$removeTicketFromPendingListAsyncAction
+        .run(() => super.removeTicketFromPendingList(ticket));
+  }
+
   final _$_HomeControllerBaseActionController =
       ActionController(name: '_HomeControllerBase');
 
@@ -80,8 +130,21 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
+  void clearPendingList() {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.clearPendingList');
+    try {
+      return super.clearPendingList();
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+pendingRequestStatus: ${pendingRequestStatus},
+pendingTicketList: ${pendingTicketList},
 mainAccount: ${mainAccount},
 mainCompany: ${mainCompany}
     ''';

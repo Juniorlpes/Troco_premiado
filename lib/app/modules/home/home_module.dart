@@ -1,5 +1,6 @@
 import 'package:troco_premiado/app/modules/home/pages/history_page.dart';
 import 'package:troco_premiado/app/modules/home/pages/create_ticket_page.dart';
+import 'package:troco_premiado/app/modules/home/pages/pending_ticket_page.dart';
 
 import 'home_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,6 +19,7 @@ class HomeModule extends ChildModule {
             child: (_, args) => HomePage(args.data)),
         ModularRouter('/addTicket',
             child: (_, args) => CreateTicketPage(createPending: args.data)),
+        ModularRouter('/pending', child: (_, args) => PendingTicketPage()),
         ModularRouter('/history', child: (_, args) => HistoryPage()),
       ];
 

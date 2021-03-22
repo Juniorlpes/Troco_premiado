@@ -30,4 +30,16 @@ class TicketRaffle {
   factory TicketRaffle.fromJson(Map<String, dynamic> json) =>
       _$TicketRaffleFromJson(json);
   Map<String, dynamic> toJson() => _$TicketRaffleToJson(this);
+
+  @override
+  bool operator ==(other) =>
+      other is TicketRaffle &&
+      other.clientName == this.clientName &&
+      other.ticketValue == this.ticketValue &&
+      other.clientPhoneNumber == this.clientPhoneNumber &&
+      other.raffleDate == this.raffleDate &&
+      other.raffleNumber == this.raffleNumber;
+
+  @override
+  int get hashCode => super.hashCode;
 }
