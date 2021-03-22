@@ -60,10 +60,20 @@ abstract class _HomeControllerBase with Store {
     }
   }
 
-  Future<TicketRaffle> createTicketRaffle(
+  Future<TicketRaffle> createRealTicketRaffle(
       String clientName, String phone, double ticketValue) async {
     return await _raffleRepository.generateRealTicket(
         mainAccount, mainCompany, clientName, phone, ticketValue);
+  }
+
+  Future<TicketRaffle> createPendingTicketRaffle(
+      String clientName, String phone, double ticketValue) async {
+    return await _raffleRepository.generatePendingTicket(
+        mainAccount, mainCompany, clientName, phone, ticketValue);
+  }
+
+  Future<List<TicketRaffle>> getPendingTickets() async {
+    return await _raffleRepository.getPendingTickets(mainCompany);
   }
 
   Future<bool> logOut() async {

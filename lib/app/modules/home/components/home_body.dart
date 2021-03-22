@@ -21,7 +21,8 @@ class HomeBody extends StatelessWidget {
             HomeCard(
               title: 'Novo Sorteio',
               icon: Icons.monetization_on,
-              onTap: () => Modular.to.pushNamed('/home/addTicket'),
+              onTap: () =>
+                  Modular.to.pushNamed('/home/addTicket', arguments: false),
             ),
             HomeCard(
               title: 'Ver Pendêntes',
@@ -31,7 +32,8 @@ class HomeBody extends StatelessWidget {
             HomeCard(
               title: 'Pré cadastro',
               icon: Icons.person_add,
-              onTap: () => null,
+              onTap: () =>
+                  Modular.to.pushNamed('/home/addTicket', arguments: true),
             ),
             HomeCard(
               title: 'Histórico',

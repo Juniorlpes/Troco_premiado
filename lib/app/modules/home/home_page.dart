@@ -30,7 +30,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
       appBar: PreferredSize(
         preferredSize: Size(screenSize.width, 60),
         child: AppBar(
-          automaticallyImplyLeading: false,
+          centerTitle: false,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

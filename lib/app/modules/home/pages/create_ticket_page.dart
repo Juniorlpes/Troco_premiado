@@ -5,13 +5,19 @@ import 'package:troco_premiado/app/modules/home/home_controller.dart';
 import 'package:troco_premiado/app/modules/home/pages/ticket_page.dart';
 import 'package:troco_premiado/shared/components/general_loading_pop.dart';
 import 'package:toast/toast.dart';
+import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 
-class CreateRafflePage extends StatefulWidget {
+class CreateTicketPage extends StatefulWidget {
+  final bool createPending;
+
+  const CreateTicketPage({Key key, @required this.createPending})
+      : super(key: key);
+
   @override
   _RafflePageState createState() => _RafflePageState();
 }
 
-class _RafflePageState extends State<CreateRafflePage> {
+class _RafflePageState extends State<CreateTicketPage> {
   final _formKey = GlobalKey<FormState>();
   final controller = Modular.get<HomeController>();
   final valueController =
@@ -115,19 +121,37 @@ class _RafflePageState extends State<CreateRafflePage> {
                         final realValue = double.parse(
                             valueController.text.replaceAll('R\$', ''));
 
-                        final ticket = await controller.createTicketRaffle(
-                          nameController.text,
-                          realPhone,
-                          realValue,
-                        );
+                        TicketRaffle ticket;
+
+                        if (widget.createPending) {
+                          ticket = await controller.createPendingTicketRaffle(
+                            nameController.text,
+                            realPhone,
+                            realValue,
+                          );
+                        } else {
+                          ticket = await controller.createRealTicketRaffle(
+                            nameController.text,
+                            realPhone,
+                            realValue,
+                          );
+                        }
+
                         Modular.to.pop();
                         if (ticket == null) {
                           Toast.show("Erro ao gerar Ticket", context,
                               duration: Toast.LENGTH_LONG,
                               gravity: Toast.BOTTOM);
                         } else {
-                          Modular.to.pushReplacement(MaterialPageRoute(
-                              builder: (_) => TicketPage(ticket: ticket)));
+                          if (widget.createPending) {
+                            Modular.to.pop();
+                            Toast.show("Pendência criada!", context,
+                                duration: Toast.LENGTH_LONG,
+                                gravity: Toast.BOTTOM);
+                          } else {
+                            Modular.to.pushReplacement(MaterialPageRoute(
+                                builder: (_) => TicketPage(ticket: ticket)));
+                          }
                         }
                       }
                     },

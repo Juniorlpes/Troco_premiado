@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:lottie/lottie.dart';
@@ -24,7 +23,7 @@ class _SplashPageState extends ModularState<SplashPage, SplashController> {
 
     disposer = autorun((_) async {
       await controller.initHive();
-      await Firebase.initializeApp();
+      // await Firebase.initializeApp();
 
       await controller.verifyAndSetRaffleDatesCache();
 

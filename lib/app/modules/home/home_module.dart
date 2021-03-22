@@ -1,5 +1,5 @@
 import 'package:troco_premiado/app/modules/home/pages/history_page.dart';
-import 'package:troco_premiado/app/modules/home/pages/raffle_page.dart';
+import 'package:troco_premiado/app/modules/home/pages/create_ticket_page.dart';
 
 import 'home_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -16,7 +16,8 @@ class HomeModule extends ChildModule {
   List<ModularRouter> get routers => [
         ModularRouter(Modular.initialRoute,
             child: (_, args) => HomePage(args.data)),
-        ModularRouter('/addTicket', child: (_, args) => CreateRafflePage()),
+        ModularRouter('/addTicket',
+            child: (_, args) => CreateTicketPage(createPending: args.data)),
         ModularRouter('/history', child: (_, args) => HistoryPage()),
       ];
 
