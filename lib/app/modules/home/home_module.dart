@@ -1,3 +1,4 @@
+import 'package:troco_premiado/app/modules/home/controllers/history_controller.dart';
 import 'package:troco_premiado/app/modules/home/pages/history_page.dart';
 import 'package:troco_premiado/app/modules/home/pages/create_ticket_page.dart';
 import 'package:troco_premiado/app/modules/home/pages/pending_ticket_page.dart';
@@ -10,7 +11,8 @@ import 'home_page.dart';
 class HomeModule extends ChildModule {
   @override
   List<Bind> get binds => [
-        $HomeController,
+        Bind((i) => HomeController()),
+        Bind((i) => HistoryController(), lazy: true),
       ];
 
   @override

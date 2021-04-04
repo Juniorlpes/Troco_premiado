@@ -1,18 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
+import 'package:troco_premiado/app/modules/home/home_controller.dart';
+import 'package:troco_premiado/shared/enums/request_status.dart';
+import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 part 'history_controller.g.dart';
 
 class HistoryController = _HistoryControllerBase with _$HistoryController;
 
 abstract class _HistoryControllerBase with Store {
-  //FirebaseFirestore _firestore;
+  FirebaseFirestore _firestore;
+  final _homeController = Modular.get<HomeController>();
 
-  _HistoryControllerBase(/*{FirebaseFirestore firestore}*/) {
-    //_firestore = firestore == null ? FirebaseFirestore.instance : firestore;
-    init();
+  _HistoryControllerBase({FirebaseFirestore firestore}) {
+    _firestore = firestore == null ? FirebaseFirestore.instance : firestore;
   }
 
-  // @observable
-  // RequestStatus requestStatus = RequestStatus.None;
+  @observable
+  RequestStatus requestStatus = RequestStatus.None;
 
   @observable
   int period = 0;
@@ -20,12 +26,41 @@ abstract class _HistoryControllerBase with Store {
   @observable
   List<DateTime> raffleDates = [];
 
+  @observable
+  ObservableList<TicketRaffle> ticketList = <TicketRaffle>[].asObservable();
+
   @action
   void init() {
-    //requestStatus = RequestStatus.Loading;
     period = _getPeriod();
     getDateList();
-    //requestStatus = RequestStatus.Success;
+  }
+
+  @action
+  Future<void> getHistoryTickets(DateTime date) async {
+    requestStatus = RequestStatus.Loading;
+
+    try {
+      final rawDocs = await _firestore
+          .collection('raffle_tickets')
+          .doc('area_${_homeController.mainCompany.luckyArea}')
+          .collection('period_0$period-${date.year}')
+          .doc('tickets')
+          .collection('raffle_ticket-${DateFormat('dd-MM-yyyy').format(date)}')
+          .where('companyId', isEqualTo: _homeController.mainCompany.id)
+          .get();
+
+      for (var i = 0; i < rawDocs.size; i++) {
+        ticketList.add(TicketRaffle.fromJson(rawDocs.docs[i].data()));
+      }
+      requestStatus = RequestStatus.Success;
+    } catch (e) {
+      requestStatus = RequestStatus.Fail;
+    }
+  }
+
+  @action
+  void clearTicketList() {
+    ticketList.clear();
   }
 
   int _getPeriod() {
