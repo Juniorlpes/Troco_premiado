@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:troco_premiado/app/modules/home/widgets/history_card.dart';
-import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
-import 'package:troco_premiado/shared/cache/cache_controller.dart';
-import 'package:troco_premiado/shared/models/ticket_raffle.dart';
+import 'package:intl/intl.dart';
+import 'package:troco_premiado/app/modules/home/controllers/history_controller.dart';
 
 class HistoryPage extends StatelessWidget {
-  final cacheRaffles =
-      CacheController<TicketRaffle>(cacheBoxEnum: CacheBox.Raffle);
+  final historyController = HistoryController();
 
   @override
   Widget build(BuildContext context) {
@@ -15,36 +12,53 @@ class HistoryPage extends StatelessWidget {
         title: Text('Histórico de bilhetes'),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<TicketRaffle>>(
-        future: getHistoryList(),
-        builder: (_, snap) {
-          switch (snap.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            default:
-              if (snap.hasError) {
-                return Center(child: Text('Erro ao Carregar'));
-              } else {
-                if (snap.data.isEmpty) {
-                  return Center(child: Text('Sem dados para exibir'));
-                } else {
-                  return ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    separatorBuilder: (_, __) => const SizedBox(height: 5),
-                    itemCount: snap.data.length,
-                    itemBuilder: (_, idx) => HistoryCard(snap.data[idx]),
-                  );
-                }
-              }
-          }
-        },
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _getBody(),
+        ),
       ),
     );
   }
 
-  Future<List<TicketRaffle>> getHistoryList() async {
-    var list = await cacheRaffles.values;
-    return list.toList();
+  List<Widget> _getBody() {
+    List<Widget> children = <Widget>[];
+
+    children.add(Container(
+      width: double.infinity,
+      child: Text(
+        'Periodo 0${historyController.period} de ${DateTime.now().year}',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ));
+
+    var startSubList = 0;
+    for (var i = 0; i < 4; i++) {
+      children.add(Text(
+        historyController.getMounthName(i),
+        style: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+        ),
+      ));
+      children.addAll(historyController.raffleDates
+          .sublist(startSubList, startSubList + 2)
+          .map<Widget>(
+            (date) => ListTile(
+              title: Text(DateFormat('dd/MM/yyyy').format(date)),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {},
+            ),
+          )
+          .toList());
+      startSubList += 2;
+    }
+
+    return children;
   }
 }

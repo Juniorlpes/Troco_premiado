@@ -106,6 +106,15 @@ mixin _$HomeController on _HomeControllerBase, Store {
     return _$getPendingTicketsAsyncAction.run(() => super.getPendingTickets());
   }
 
+  final _$saveTicketAsRealAsyncAction =
+      AsyncAction('_HomeControllerBase.saveTicketAsReal');
+
+  @override
+  Future<void> saveTicketAsReal(TicketRaffle ticket, double oldValue) {
+    return _$saveTicketAsRealAsyncAction
+        .run(() => super.saveTicketAsReal(ticket, oldValue));
+  }
+
   final _$removeTicketFromPendingListAsyncAction =
       AsyncAction('_HomeControllerBase.removeTicketFromPendingList');
 
