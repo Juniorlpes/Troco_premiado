@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:troco_premiado/shared/cache/cache_adapters_id.dart';
 import 'package:troco_premiado/shared/cache/cache_box_enum.dart';
 import 'package:troco_premiado/shared/cache/cache_controller.dart';
 import 'package:troco_premiado/shared/enums/e_user_type.dart';
@@ -23,7 +24,7 @@ abstract class _SplashControllerBase with Store {
   Account prevAccount;
 
   Future<void> initHive() async {
-    if (Hive.isAdapterRegistered(1)) {
+    if (Hive.isAdapterRegistered(CacheAdaptersId.CompanyAdapter)) {
       return;
     }
     final appDocumentDirectory = await getApplicationDocumentsDirectory();

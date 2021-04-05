@@ -23,7 +23,6 @@ class _SplashPageState extends ModularState<SplashPage, SplashController> {
 
     disposer = autorun((_) async {
       await controller.initHive();
-      // await Firebase.initializeApp();
 
       await controller.verifyAndSetRaffleDatesCache();
 
