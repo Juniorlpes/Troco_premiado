@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:troco_premiado/app/modules/home/pages/print_page.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
 
 class TicketPage extends StatelessWidget {
@@ -70,7 +72,10 @@ class TicketPage extends StatelessWidget {
                     'Imprimir Ticket',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                  onPressed: () async {},
+                  onPressed: () async {
+                    Modular.to.push(MaterialPageRoute(
+                        builder: (_) => PrintPage(ticket: ticket)));
+                  },
                 ),
               ),
             ],

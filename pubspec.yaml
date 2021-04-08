@@ -31,7 +31,7 @@ dependencies:
   flutter_masked_text: ^0.8.0
   toast: ^0.1.5
   qr_flutter: ^3.2.0
-  #bluetooth_print: ^2.0.0
+  blue_thermal_printer: ^1.1.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.7.5
