@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:troco_premiado/app/modules/home/pages/print_page.dart';
 import 'package:troco_premiado/shared/models/ticket_raffle.dart';
@@ -58,7 +59,15 @@ class TicketPage extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Prêmio: ${(ticket.ticketValue * 1000).toStringAsFixed(2)}',
+                  'Prêmio final: ${(ticket.ticketValue * 1000).toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Criado em: ${DateFormat('dd/MM/yyyy').format(ticket.createdDate)}',
                   style: TextStyle(fontSize: 16),
                 ),
               ),

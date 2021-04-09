@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="troco_premiado"
+        android:label="Troco Premiado"
         android:screenOrientation="portrait"
         android:icon="@mipmap/ic_launcher">
         <activity

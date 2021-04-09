@@ -117,7 +117,7 @@ class _PrintPageState extends State<PrintPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   RaisedButton(
-                    color: Colors.brown,
+                    color: Theme.of(context).primaryColor,
                     onPressed: () {
                       initPlatformState();
                     },
@@ -143,7 +143,7 @@ class _PrintPageState extends State<PrintPage> {
                 padding:
                     const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
                 child: RaisedButton(
-                  color: Colors.brown,
+                  color: Theme.of(context).primaryColor,
                   onPressed: () {
                     printTicket();
                   },
@@ -201,11 +201,13 @@ class _PrintPageState extends State<PrintPage> {
         bluetooth.printCustom(widget.ticket.formattedRaffleNumber, 4, 1);
         bluetooth.printNewLine();
         bluetooth.printCustom(
-            'Com esse numero você concorre a um premio de R\$ 100 quinzenalmente ate o dia ${DateFormat('dd/MM/yyyy').format(widget.ticket.bigLuckyaffleDate)}.',
+            'Com esse numero você concorre a um premio de R\$100 quinzenalmente ate o dia ${DateFormat('dd/MM/yyyy').format(widget.ticket.bigLuckyaffleDate)}.',
             1,
             1);
         bluetooth.printCustom(
-            'O ultimo premio é de 1000 vezes o troco deixado na loja!', 1, 1);
+            'O ultimo premio sera de 1000 vezes o troco deixado na loja!',
+            1,
+            1);
         bluetooth.printNewLine();
         bluetooth.printCustom('Cliente: ${widget.ticket.clientName}', 1, 0);
         bluetooth.printCustom('Troco: R\$ ${widget.ticket.ticketValue}', 1, 0);
@@ -221,7 +223,7 @@ class _PrintPageState extends State<PrintPage> {
             1,
             0);
         bluetooth.printNewLine();
-        bluetooth.printCustom("Boa Sorte", 2, 1);
+        bluetooth.printCustom("Boa Sorte!", 2, 1);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.paperCut();
