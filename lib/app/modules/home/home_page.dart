@@ -31,8 +31,10 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         preferredSize: Size(screenSize.width, 60),
         child: AppBar(
           centerTitle: false,
+          brightness: Brightness.dark,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Bem-vindo, ${widget.mainAccount.name}',
@@ -40,12 +42,14 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 overflow: TextOverflow.ellipsis,
               ),
               Observer(
-                builder: (_) => Text(
-                  controller.mainCompany?.name ?? '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 18, color: Colors.white60),
-                ),
+                builder: (_) => (controller.mainCompany?.name == null)
+                    ? Container(height: 0)
+                    : Text(
+                        controller.mainCompany?.name ?? '',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 18, color: Colors.white60),
+                      ),
               )
             ],
           ),

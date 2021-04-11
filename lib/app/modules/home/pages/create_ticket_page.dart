@@ -181,6 +181,14 @@ class _RafflePageState extends State<CreateTicketPage> {
       validator: (s) {
         final stringValue = s.replaceAll('R\$', '');
         final douleValue = double.parse(stringValue);
+        //Validação de bilhete Pendente
+        if (widget.createPending) {
+          if (douleValue > 4.99) {
+            return 'Por favor, valores abaixo de 4,99';
+          } else
+            return null;
+        }
+        //validação de bilhete real
         if (douleValue > 4.99 || douleValue < 0.01) {
           return 'Por favor, valores devem ser entre 0,01 e 4,99';
         } else {
